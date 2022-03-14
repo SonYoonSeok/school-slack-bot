@@ -1,0 +1,6 @@
+slack:
+  token: xoxb-3200107212802-3202477060212-JFHKcdFxJZaPXu6G8LOKvPyI
+  channel:
+    monitor: '#일반'
+server:
+  port: 80
