@@ -1,6 +1,0 @@
-slack:
-  token: xoxb-3200107212802-3202477060212-IjCzKfrQqKPl27DFIXacsNKz
-  channel:
-    monitor: '손윤석'
-server:
-  port: 80
