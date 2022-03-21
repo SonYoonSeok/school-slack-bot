@@ -45,4 +45,14 @@ public class SchoolService {
         System.out.println(schoolInfo.toString());
         return schoolInfo;
     }
+
+    private String getSchoolType(String schoolName) {
+        if (schoolName.contains("초등학교")) {
+            return "elementary";
+        } else if (schoolName.contains("중학교")) {
+            return "middle";
+        } else {
+            return "high";
+        }
+    }
 }
