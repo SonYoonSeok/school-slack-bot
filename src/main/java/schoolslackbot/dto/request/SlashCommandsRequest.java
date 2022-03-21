@@ -1,4 +1,4 @@
-package schoolslackbot.dto;
+package schoolslackbot.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;
