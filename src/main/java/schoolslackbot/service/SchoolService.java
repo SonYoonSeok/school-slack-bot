@@ -2,45 +2,47 @@ package schoolslackbot.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import schoolslackbot.dto.SchoolInfoDto;
 import schoolslackbot.dto.response.FindSchoolResponse;
 import schoolslackbot.dto.response.SchoolMenuResponse;
 import schoolslackbot.util.RequestUtils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
 public class SchoolService {
 
     private final RequestUtils requestUtils;
-    private final ThreadLocal<String> schoolCode = new ThreadLocal<>();
-
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String codeUrl = "https://schoolmenukr.ml/code/api?q=";
+    private final LocalDate now = LocalDate.now();
 
-    private String requestMethod = "";
+    @Value("${url.code}")
+    private String codeUrl;
+
+    @Value("${url.menu}")
+    private String menuUrl;
 
     public SchoolMenuResponse findSchoolMenu(String schoolName) throws Exception {
-        SchoolMenuResponse response = null;
+
+        SchoolMenuResponse schoolMenuInfo = null;
         SchoolInfoDto schoolInfo = getSchoolInfo(schoolName);
         String schoolType = getSchoolType(schoolName);
+        String url = menuUrl + schoolType + "/" + schoolInfo.getCode() + "?year=" + now.getYear() + "&month=" + now.getMonth().getValue() + "&date=" + now.getDayOfMonth();
 
-        return response;
+        schoolMenuInfo = getSchoolMenu(url);
+
+        System.out.println(schoolMenuInfo.toString());
+        return schoolMenuInfo;
     }
 
     private SchoolInfoDto getSchoolInfo(String schoolName) throws Exception {
-        Map<String, String> map;
-        FindSchoolResponse list;
-        SchoolInfoDto schoolInfo;
-
-        requestMethod = "GET";
+        String requestMethod = "GET";
         String response = requestUtils.httpRequest(codeUrl + schoolName, requestMethod);
-        list = objectMapper.readValue(response, FindSchoolResponse.class);
-        schoolInfo = list.getSchoolInfoList().get(0);
+        FindSchoolResponse list = objectMapper.readValue(response, FindSchoolResponse.class);
+        SchoolInfoDto schoolInfo = list.getSchoolInfoList().get(0);
 
         System.out.println(schoolInfo.toString());
         return schoolInfo;
@@ -54,5 +56,14 @@ public class SchoolService {
         } else {
             return "high";
         }
+    }
+
+    private SchoolMenuResponse getSchoolMenu(String url) throws Exception {
+        String requestMethod = "GET";
+        String response = requestUtils.httpRequest(url, requestMethod);
+        SchoolMenuResponse schoolMenuInfo = objectMapper.readValue(response, SchoolMenuResponse.class);
+
+        System.out.println(schoolMenuInfo.toString());
+        return schoolMenuInfo;
     }
 }
