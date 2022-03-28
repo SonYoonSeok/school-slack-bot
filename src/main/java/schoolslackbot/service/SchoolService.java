@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import schoolslackbot.dto.MealMenu;
 import schoolslackbot.dto.SchoolInfoDto;
 import schoolslackbot.dto.response.FindSchoolResponse;
 import schoolslackbot.dto.response.SchoolMenuResponse;
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class SchoolService {
 
+    private final SlackService slackService;
+
     private final RequestUtils requestUtils;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final LocalDate now = LocalDate.now();
@@ -25,8 +28,7 @@ public class SchoolService {
     @Value("${url.menu}")
     private String menuUrl;
 
-    public SchoolMenuResponse findSchoolMenu(String schoolName) throws Exception {
-
+    public void findSchoolMenu(String schoolName) throws Exception {
         SchoolMenuResponse schoolMenuInfo = null;
         SchoolInfoDto schoolInfo = getSchoolInfo(schoolName);
         String schoolType = getSchoolType(schoolName);
@@ -34,8 +36,44 @@ public class SchoolService {
 
         schoolMenuInfo = getSchoolMenu(url);
 
-        System.out.println(schoolMenuInfo.toString());
-        return schoolMenuInfo;
+        slackService.sendMessage(toSchoolMenuMessage(schoolName, schoolMenuInfo.getMenus().get(0)));
+    }
+
+    private String toSchoolMenuMessage(String schoolName, MealMenu menu) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("--- " + schoolName + "의 " + now.getYear() + "년 " + now.getMonth().getValue() + "월 " + now.getDayOfMonth() + "일 급식 ---\n");
+        sb.append("아침\n");
+        if (!menu.getBreakfast().isEmpty()) {
+            for (String meal : menu.getBreakfast()) {
+                meal = meal.split("-|[0-9]")[0];
+                sb.append(" - " + meal + "\n");
+            }
+        } else {
+            sb.append(" -   아침이 존재하지 않습니다!   - \n");
+        }
+
+        sb.append("\n점심\n");
+        if (!menu.getLunch().isEmpty()) {
+            for (String meal : menu.getLunch()) {
+                meal = meal.split("-|[0-9]")[0];
+                sb.append(" - " + meal + "\n");
+            }
+        } else {
+            sb.append(" -   점심이 존재하지 않습니다!   - \n");
+        }
+
+        sb.append("\n저녁\n");
+        if (!menu.getDinner().isEmpty()) {
+            for (String meal : menu.getDinner()) {
+                meal = meal.split("-|[0-9]")[0];
+                sb.append(" - " + meal + "\n");
+            }
+        } else {
+            sb.append(" -   저녁이 존재하지 않습니다!   - \n   ");
+        }
+
+        return sb.toString();
     }
 
     private SchoolInfoDto getSchoolInfo(String schoolName) throws Exception {
@@ -44,7 +82,6 @@ public class SchoolService {
         FindSchoolResponse list = objectMapper.readValue(response, FindSchoolResponse.class);
         SchoolInfoDto schoolInfo = list.getSchoolInfoList().get(0);
 
-        System.out.println(schoolInfo.toString());
         return schoolInfo;
     }
 
