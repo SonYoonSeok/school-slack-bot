@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import schoolslackbot.dto.MealMenu;
-import schoolslackbot.dto.SchoolInfoDto;
+import schoolslackbot.dto.SchoolInfo;
 import schoolslackbot.dto.response.FindSchoolResponse;
 import schoolslackbot.dto.response.SchoolMenuResponse;
 import schoolslackbot.util.RequestUtils;
@@ -30,7 +30,7 @@ public class SchoolService {
 
     public void findSchoolMenu(String schoolName) throws Exception {
         SchoolMenuResponse schoolMenuInfo = null;
-        SchoolInfoDto schoolInfo = getSchoolInfo(schoolName);
+        SchoolInfo schoolInfo = getSchoolInfo(schoolName);
         String schoolType = getSchoolType(schoolName);
         String url = menuUrl + schoolType + "/" + schoolInfo.getCode() + "?year=" + now.getYear() + "&month=" + now.getMonth().getValue() + "&date=" + now.getDayOfMonth();
 
@@ -76,11 +76,11 @@ public class SchoolService {
         return sb.toString();
     }
 
-    private SchoolInfoDto getSchoolInfo(String schoolName) throws Exception {
+    private SchoolInfo getSchoolInfo(String schoolName) throws Exception {
         String requestMethod = "GET";
         String response = requestUtils.httpRequest(codeUrl + schoolName, requestMethod);
         FindSchoolResponse list = objectMapper.readValue(response, FindSchoolResponse.class);
-        SchoolInfoDto schoolInfo = list.getSchoolInfoList().get(0);
+        SchoolInfo schoolInfo = list.getSchoolInfoList().get(0);
 
         return schoolInfo;
     }

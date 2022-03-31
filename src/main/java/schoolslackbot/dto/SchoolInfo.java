@@ -10,7 +10,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class SchoolInfoDto {
+public class SchoolInfo {
 
     @JsonProperty(value = "name")
     private String name;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import schoolslackbot.dto.SchoolInfoDto;
+import schoolslackbot.dto.SchoolInfo;
 
 import java.util.List;
 
@@ -17,5 +17,5 @@ public class FindSchoolResponse {
     private List<String> serverMessage;
 
     @JsonProperty(value = "school_infos")
-    private List<SchoolInfoDto> schoolInfoList;
+    private List<SchoolInfo> schoolInfoList;
 }
