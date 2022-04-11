@@ -14,7 +14,7 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-public class SchoolService {
+public class MenuService {
 
     private final SlackService slackService;
 
@@ -80,9 +80,8 @@ public class SchoolService {
         String requestMethod = "GET";
         String response = requestUtils.httpRequest(codeUrl + schoolName, requestMethod);
         FindSchoolResponse list = objectMapper.readValue(response, FindSchoolResponse.class);
-        SchoolInfo schoolInfo = list.getSchoolInfoList().get(0);
 
-        return schoolInfo;
+        return list.getSchoolInfoList().get(0);
     }
 
     private String getSchoolType(String schoolName) {
@@ -98,9 +97,7 @@ public class SchoolService {
     private SchoolMenuResponse getSchoolMenu(String url) throws Exception {
         String requestMethod = "GET";
         String response = requestUtils.httpRequest(url, requestMethod);
-        SchoolMenuResponse schoolMenuInfo = objectMapper.readValue(response, SchoolMenuResponse.class);
 
-        System.out.println(schoolMenuInfo.toString());
-        return schoolMenuInfo;
+        return objectMapper.readValue(response, SchoolMenuResponse.class);
     }
 }
