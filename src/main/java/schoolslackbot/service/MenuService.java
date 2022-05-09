@@ -70,7 +70,7 @@ public class MenuService {
                 sb.append(" - " + meal + "\n");
             }
         } else {
-            sb.append(" -   저녁이 존재하지 않습니다!   - \n   ");
+            sb.append(" -   저녁이 존재하지 않습니다!   - \n");
         }
 
         return sb.toString();
