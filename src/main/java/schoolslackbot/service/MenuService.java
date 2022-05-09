@@ -84,7 +84,7 @@ public class MenuService {
         return list.getSchoolInfoList().get(0);
     }
 
-    private String getSchoolType(String schoolName) {
+    public String getSchoolType(String schoolName) {
         if (schoolName.contains("초등학교")) {
             return "elementary";
         } else if (schoolName.contains("중학교")) {
