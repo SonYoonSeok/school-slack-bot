@@ -11,5 +11,5 @@ import java.util.List;
 public class NeisSchoolInfo {
 
     @JsonProperty(value = "row")
-    List<NeisSchoolInfoRow> row;
+    private List<NeisSchoolInfoRow> row;
 }
